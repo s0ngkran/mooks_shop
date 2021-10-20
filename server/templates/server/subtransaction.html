@@ -1,0 +1,93 @@
+{% extends './base_nav.html' %}
+{% load humanize %}
+
+{% block head %}
+<style>
+    .is-adjust{
+        color: orange;
+    }
+    .header {
+        margin: 3em;
+    }
+
+    .right {
+        text-align: right;
+    }
+
+    tr td {
+        width: 100px;
+    }
+
+    .mytable {
+        table-layout: fixed;
+    }
+
+    #time {
+        width: 300px;
+    }
+
+    .bold-text {
+        font-weight: 600;
+    }
+    .center{
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<br>
+<div class="flexrow">
+    <p>{{transaction.updated_on}}</p>
+</div>
+<div class="flexrow">
+    <div class="col-lg-6 myform">
+        <table class="table table-striped mytable">
+            <tbody>
+                <tr>
+                    <td class="center">Total</td>
+                    <!-- <td>received</td> -->
+                    <td class="center">Balance</td>
+                    <td class="center">Payment</td>
+                </tr>
+                <!-- transaction -->
+                <tr>
+                    <td class="center">{{transaction.total|floatformat:2}}</td>
+                    <!-- <td>{{transaction.received}}</td> -->
+                    <td class="center">{{transaction.balance|floatformat:2}}</td>
+                    <td class="center">{{transaction.payment_type}}</td>
+                </tr>
+
+            </tbody>
+        </table>
+        <br>
+
+            <table class="table table-striped mytable">
+                <tbody>
+                    <tr>
+                        <td class="">n_item</td>
+                        <!-- <td>received</td> -->
+                        <td class="center">Product Name</td>
+                        <td class="right">price</td>
+                    </tr>
+
+                    <!-- show sub transaction -->
+                    {% for sub in subs %}
+                    <tr>
+                        <th scope="row">{{sub.n_item | intcomma}} ชิ้น</th>
+                        <td class="center">{{sub.product_obj.name}}</td>
+
+                        {% if sub.is_adjust %}
+                            <td class="right is-adjust">{{sub.price |floatformat:2}}</td>
+                        {% else %}
+                            <td class="right">{{sub.price |floatformat:2}}</td>
+                        {% endif %}
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+    </div>
+</div>
+{% endblock %}

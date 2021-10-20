@@ -1,0 +1,81 @@
+{% extends './base_nav.html' %}
+
+{% block head %}
+<style>
+    .header {
+        margin: 3em;
+    }
+
+    .right {
+        text-align: right;
+    }
+    tr td{
+        width: 100px;
+    }
+    .mytable{
+        table-layout: fixed;
+    }
+    #time{
+        width: 300px;
+    }
+    .bold-text{
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="flexrow header">
+    <h4>Transaction</h4>
+</div>
+<div class="flexrow">
+    <form method="post" >
+        {% csrf_token %}
+        <input type="hidden" name="act" value="select date">
+        <input type="date" name="date" onChange="this.form.submit();">
+    </form>
+
+</div>
+<div class="flexrow">
+    <div class="col-lg-6 myform">
+        <table class="table table-striped mytable">
+            <tbody>
+                <tr class="table-success">
+                    <td class="bold-text">{{n_transaction}}</td>
+                    <td id="time" width="300px"> </td>
+                    <td class="right bold-text">{{sum_total|floatformat:2}}</td>
+                    <!-- <td>received</td> -->
+                    <td class="right bold-text">{{sum_balance|floatformat:2}}</td>
+                    <td class="right"></td>
+                </tr>
+                <tr>
+                    <td>#</td>
+                    <td id="time" width="300px">Time </td>
+                    <td class="right">Total</td>
+                    <!-- <td>received</td> -->
+                    <td class="right">Balance</td>
+                    <td class="right">Payment</td>
+                </tr>
+
+                {% for transaction in transactions %}
+
+                    <tr>
+                        <td >
+                            
+                            <a href="/subtransaction/{{transaction.id}}">
+                                {{transaction.i}}
+                            </a>
+                        </td>
+                        <td >{{transaction.updated_on}}</td>
+                        <td class="right">{{transaction.total|floatformat:2}}</td>
+                        <!-- <td>{{transaction.received}}</td> -->
+                        <td class="right">{{transaction.balance|floatformat:2}}</td>
+                        <td class="right">{{transaction.payment_type}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+</div>
+{% endblock %}

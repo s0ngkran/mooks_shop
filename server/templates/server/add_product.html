@@ -1,0 +1,113 @@
+{% extends './base_nav.html' %}
+
+{% block head %}
+<style>
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="my-messages">
+    {% for message in messages %}
+        <div class="alert alert-success" role="alert">
+            Added {{message}}
+        </div>
+    {% endfor %}
+</div>
+
+<div class="flexrow">
+    <h5>Add New Product</h5>
+</div>
+<div class="flexrow">
+    <div class="myform col-lg-4">
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="act" value="add new product">
+
+            <!-- category     -->
+            <div class="row">
+                <div class="col-11">
+                    <div class="input-group mb-3">
+                        <select name="category" class="custom-select" id="inputGroupSelect01">
+                        <option value="{{current_category.id}}" selected>{{current_category.name}}</option>
+                            {% for category in categories %}
+                                <option value="{{category.id}}">{{category.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="input-group-append">
+                        <label class="input-group-text" for="inputGroupSelect01">Category</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- add new category -->
+                <div class="col-1">
+                    <a href="{% url 'create-category-page' %}">
+
+                        <h5>+</h5>
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- barcode -->
+            <div class="input-group input-group-sm mb-3">
+                <input placeholder="required" id="barcode_input" type="text" name="barcode" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>
+                <div  class="input-group-append">
+                <span class="input-group-text barcode" id="inputGroup-sizing-sm">Barcode</span>
+                </div>
+            </div>
+
+            <!-- name -->
+            <div class="input-group input-group-sm mb-3">
+                <input placeholder="required" type="text" name="name" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>
+                <div class="input-group-append">
+                <span class="input-group-text" id="inputGroup-sizing-sm">Name</span>
+                </div>
+            </div>
+
+            <!-- description -->
+            <div class="input-group input-group-sm mb-3">
+                <input type="text" name="description" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+                <div class="input-group-append">
+                <span class="input-group-text" id="inputGroup-sizing-sm">Description</span>
+                </div>
+            </div>
+
+            <!-- price -->
+            <div class="input-group input-group-sm mb-3">
+                <input placeholder="required" type="number" name="price" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" required>
+                <div class="input-group-append">
+                <span  class="input-group-text" id="inputGroup-sizing-sm">Price</span>
+                </div>
+            </div>
+
+            <!-- inventory -->
+            <div class="input-group input-group-sm mb-3">
+                <input type="number" oninput="this.value = Math.round(this.value);" name="inventory" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm">
+                <div class="input-group-append">
+                <span  class="input-group-text" id="inputGroup-sizing-sm">Inventory</span>
+                </div>
+            </div>
+            <div class="flexrow">
+
+                <button class="btn btn-primary form-control">Add</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<input type="hidden" id="error" value="{{error}}">
+<input type="hidden" id="error_message" value="{{error_message}}">
+<script>
+    window.onload = ()=>{
+        const barcode_input = document.getElementById('barcode_input');
+        const error = document.getElementById('error').value;
+        const error_message = document.getElementById('error_message').value;
+        if (error!=''){
+            alert(error);
+        }
+        barcode_input.focus();
+
+    }
+</script>
+{% endblock %}

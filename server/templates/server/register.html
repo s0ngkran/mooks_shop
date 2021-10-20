@@ -1,0 +1,30 @@
+{% extends './base.html' %}
+
+{% block head %}
+<style>
+    .registerbox{
+        max-width: 650px;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="flexrow">
+    <div class="flexcolumn registerbox">
+        <h5>register</h5>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="act" value="register">
+            {{form_user|linebreaks}}
+
+            {{form_profile|linebreaks}}
+            <div class="flexrow flexend">
+                <a href="{% url 'login-page' %}" class="btn btn-link">login</a>
+                <button class="btn btn-primary">register</button>
+            </div>
+            
+        </form>
+    </div>
+    
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends './base_nav.html' %}
+
+{% block head %}
+<style>
+    .header{
+        margin: 3em;
+    }
+    .myform input{
+        width: 100%;
+        background-color: rgb(245, 245, 245);
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+    <div class="flexrow header">
+        <h4>Create New Category</h4>
+    </div>
+    <div class="flexrow">
+        <div class="col-lg-4 myform">
+            <form method="post">{% csrf_token %}
+                {{ form.as_p }}
+                <div class="flexrow">
+                    <button class="btn btn-primary form-control">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

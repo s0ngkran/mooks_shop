@@ -1,0 +1,50 @@
+{% extends './base.html' %}
+
+{% block head %}
+<style>
+    .loginform{
+        width: 300px;
+        align-items: center;
+        justify-content: center;
+    }
+    .btn{
+        margin-top: 1em;
+    }
+    .head{
+        padding: 1em;
+        padding-top: 4em;
+    }
+    .col-sm-4{
+        align-items: center;
+    }
+
+</style>
+{% endblock %}
+
+{% block body %}
+<div>
+    <div class="flexrow">
+        <div class="flexcolumn">
+            
+            <div class="flexrow head">
+                <h1>Mook's Shop</h1>
+            </div>
+
+            <div class="flexrow">
+
+                <form method="post" class="loginform">
+                    {% csrf_token %}
+                    <input type="hidden" name="act" value="login">
+                    <input type="text" class="form-control" name="username" placeholder="Username">
+                    <input type="password" class="form-control" name="password" placeholder="Password">
+
+                    <button class="btn btn-primary form-control">login</button>
+                    
+                </form>
+            </div>
+            
+        </div>
+    </div>
+    
+</div>
+{% endblock %}
