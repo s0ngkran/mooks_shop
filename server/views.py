@@ -440,6 +440,11 @@ class CashierPage(MyView):
             profile.save()
             self.context = {}
             return redirect('cashier-page')
+        
+        if act == 'del item':
+            subs = SubTransaction.objects.filter(pk=data.get('pk')).delete()
+
+            return self.render(request)
 
 
 class CategoryCreateView(CreateView):
@@ -560,6 +565,8 @@ class SubTransactionPage(MyView):
             'subs': subs,
         })
         return self.render(request)
+
+
 
 class MigratePage(MyView):
     # template_name = 'server/subtransaction.html'

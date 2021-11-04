@@ -93,6 +93,10 @@ class Promotion(MyModel):
     price = models.FloatField()
 
     # promotion and discount
+class PromotionOnGroup(MyModel):
+    products = models.ManyToManyField(Product, blank=True)
+    n_item = models.IntegerField()
+    price = models.FloatField()
 
 class GroupingPromotion(MyModel):
     products = models.ManyToManyField(Product)

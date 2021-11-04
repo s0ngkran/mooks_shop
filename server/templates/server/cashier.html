@@ -13,7 +13,8 @@
         font-weight: 600;
         font-size: 1.1em;
     }
-    .bold-text{
+
+    .bold-text {
         font-weight: 600;
     }
 
@@ -76,7 +77,7 @@
 
     .header {
         justify-content: space-between;
-        align-items:flex-end;
+        align-items: flex-end;
     }
 
     .show-balance {
@@ -89,26 +90,38 @@
         height: 160px;
         display: none;
     }
-    .mytable{
+
+    .mytable {
         table-layout: fixed;
     }
-    .adj-box{
-        padding: 0px ;
-        margin: 0px ;
+
+    .adj-box {
+        padding: 0px;
+        margin: 0px;
     }
+
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+        -webkit-appearance: none;
+        margin: 0;
     }
-    .date{
+
+    .date {
         font-size: 0.8em;
         font-weight: 300;
     }
-    .is-adjust{
+
+    .is-adjust {
         color: orange;
     }
+    .no-pad-horizontal {
+        padding-left:0px !important;
+        padding-right:0px !important;
+    }
+    .no-pad-horizontal .btn{
+        padding: 0px !important;
 
+    }
 </style>
 {% endblock %}
 
@@ -126,7 +139,7 @@
         <div class="flexrow header">
 
             <h5>Product List </h5>
-            <h1>              <span class="badge badge-success">{{transaction.total|floatformat:2}}</span>          </h1>
+            <h1> <span class="badge badge-success">{{transaction.total|floatformat:2}}</span> </h1>
             <h5 class="date">{{transaction.updated_on}}</h5>
         </div>
         <table class="table table-striped mytable">
@@ -140,13 +153,22 @@
                     <td>{{sub.product_obj.name}}</td>
 
                     {% if sub.is_adjust %}
-                        <td class="right is-adjust">{{sub.price |floatformat:2}}</td>
+                    <td class="right is-adjust">{{sub.price |floatformat:2}}</td>
                     {% else %}
-                        <td class="right">{{sub.price |floatformat:2}}</td>
+                    <td class="right">{{sub.price |floatformat:2}}</td>
                     {% endif %}
 
-                    <td width="85px">
+                    <!-- a product discount -->
+                    <td width="80px" class="no-pad-horizontal">
                         <input id="sub;{{sub.id}}" type="number" placeholder="ลดเหลือ" class="adj-box form-control adjust-sub" name="price" maxlength="4" size="4">
+                    </td>
+                    <td width="30px" class="no-pad-horizontal">
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="act" value="del item">
+                            <input type="hidden" name="pk" value="{{sub.pk}}">
+                            <button class="btn btn-danger">ลบ</button>
+                        </form>
                     </td>
                 </tr>
                 {% endfor %}
@@ -166,7 +188,9 @@
                         </td>
                         {% endif %}
                         <!-- <td class="right" width="200px">{{sub.sum}}</td> -->
-                        <td >
+
+                        <!-- discount -->
+                        <td>
                             <form id="adjust total" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="act" value="adjust total">
@@ -355,10 +379,10 @@
                 doPayment();
             });
 
-            function getSubId(){
-                for (var i = 0; i <adjust_sub_inputs.length; i++) {
+            function getSubId() {
+                for (var i = 0; i < adjust_sub_inputs.length; i++) {
                     sub = adjust_sub_inputs[i];
-                    if ( sub.value!='' ) {
+                    if (sub.value != '') {
                         subId = sub.id.split(';')[1];
                         price = sub.value;
                         return [subId, price];
@@ -367,7 +391,7 @@
                 return null;
             }
 
-            function addFormData(formEle, key, value){
+            function addFormData(formEle, key, value) {
                 let inputEle = document.createElement('input');
                 inputEle.name = key;
                 inputEle.type = 'hidden';
@@ -379,10 +403,10 @@
                 // console.log(evt);
                 // alert(barcode_input.value);
                 if (phase == 'start') {
-                    if (evt.code == 'Enter' && adjust_total_input.value!='') {
+                    if (evt.code == 'Enter' && adjust_total_input.value != '') {
                         adjust_total_form.submit();
                     }
-                    else if (evt.code=='Enter' && getSubId() != null) {
+                    else if (evt.code == 'Enter' && getSubId() != null) {
                         [subId, price] = getSubId();
                         addFormData(adjust_sub_form, 'price', price);
                         addFormData(adjust_sub_form, 'sub_id', subId);
