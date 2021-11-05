@@ -345,6 +345,8 @@ class CashierPage(MyView):
     @has_perm
     def get(self, request, *args, **kwargs):
         profile = request.user.profile_set.all().first()
+        if profile == None:
+            return redirect('logout-page')
         transaction = self.get_transaction(profile)
 
         # subs, total, total_item, transaction = self.get_total(transaction)
