@@ -659,7 +659,7 @@ class MigratePage(MyView):
     # template_name = 'server/subtransaction.html'
     permission = 9999
     def migrate2(self, xlsx_path):
-        wb_obj = openpyxl.load_workbook('./path_to_file.xlsx')
+        wb_obj = openpyxl.load_workbook(xlsx_path)
         count = 0
         for sheet in wb_obj.worksheets:
             # row and column index start at 1 not 0
@@ -667,11 +667,17 @@ class MigratePage(MyView):
                 try:
                     category  = sheet.cell(row=i, column=1).value
                     barcode  = sheet.cell(row=i, column=2).value
+                    # barcode = str(barcode) # add this line
+                    # barcode = float(barcode.split('e+')[0]) * 10 ** int(barcode.split('e+')[1])
+                    if 'e+' in str(barcode):
+                        barcode = '%d'%(int(barcode))
+                    else:
+                        barcode = str(barcode)
                     quantity  = sheet.cell(row=i, column=3).value
                     comment  = sheet.cell(row=i, column=4).value
                     product_name  = sheet.cell(row=i, column=5).value
                     price  = sheet.cell(row=i, column=6).value
-                    if category == None and barcode == None:
+                    if category == None and price == None:
                         break
                     barcode = barcode.replace(' ', '')
                     try:
@@ -707,7 +713,8 @@ class MigratePage(MyView):
                     )
                     # print('added', i)
                     count += 1
-                except:
+                except Exception as e:
+                    print(i, e)
                     pass
         return count
 
