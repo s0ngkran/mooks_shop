@@ -2,7 +2,7 @@
 
 {% block nav %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Mook's Shop</a>
+    <a class="navbar-brand" href="/admin">Mook's Shop</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -13,7 +13,7 @@
             <a class="nav-link" href="{% url 'cashier-page' %}">Cashier คิดเงิน</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{% url 'cashier-page' %}">Change Product เปลี่ยนสินค้า</a>
+            <a class="nav-link disabled">Change Product เปลี่ยนสินค้า</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="{% url 'transaction-page' %}">Transaction</a>
@@ -35,6 +35,7 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <a class="dropdown-item" href="{% url 'add-new-promotion-page' %}">+ Promotion</a>
+                <a class="dropdown-item" href="{% url 'add-promotion-on-group-page' %}">+ PromotionGroup</a>
         </li>
 
         </ul>

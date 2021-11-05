@@ -1,0 +1,26 @@
+
+.flexcol{
+  display: flex;
+  flex-direction: column;
+}
+.flexrow{
+  display: flex;
+  flex-direction: row;
+}
+.center{
+  justify-content: center;
+}
+.barcode-card{
+  margin-right: 1em;
+  background-color: rgb(244, 244, 244);
+}
+.center-card{
+  margin-right: 1em;
+  margin-left: 1em;
+  background-color: rgb(244, 244, 244);
+}
+.right-card{
+  margin-right: 1em;
+  margin-left: 1em;
+  background-color: rgb(244, 244, 244);
+}

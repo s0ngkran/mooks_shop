@@ -114,11 +114,13 @@
     .is-adjust {
         color: orange;
     }
+
     .no-pad-horizontal {
-        padding-left:0px !important;
-        padding-right:0px !important;
+        padding-left: 0px !important;
+        padding-right: 0px !important;
     }
-    .no-pad-horizontal .btn{
+
+    .no-pad-horizontal .btn {
         padding: 0px !important;
 
     }
@@ -219,6 +221,15 @@
                     {% endif %}
 
                 </div>
+                <tr class="table-light">
+                    <td colspan="5">
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="act" value="clear all">
+                            <button class="btn btn-warning form-control">clear all</button>
+                        </form>
+                    </td>
+                </tr>
             </tbody>
         </table>
 

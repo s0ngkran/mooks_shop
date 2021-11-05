@@ -54,6 +54,8 @@ class Transaction(MyModel):
     is_adjust = models.BooleanField(default=False)
     is_success = models.BooleanField(default=False)
     status = models.CharField(max_length=255, null=True, blank=True)
+    discount_from_promotion = models.FloatField(null=True, blank=True)
+    discount_from_promotion_on_group = models.FloatField(null=True, blank=True)
     payment_type = models.ForeignKey(PaymentType, on_delete=models.CASCADE, null=True, blank=True)
     def get_sub_text(self):
         subs = self.subtransaction_set.all()
@@ -93,15 +95,24 @@ class Promotion(MyModel):
     price = models.FloatField()
 
     # promotion and discount
+class PromotionOnGroupPricing(MyModel):
+    n_item = models.IntegerField()
+    price = models.FloatField()
+    def __str__(self):
+        return str(self.n_item) +'->'+str(self.price)
 class PromotionOnGroup(MyModel):
     products = models.ManyToManyField(Product, blank=True)
-    n_item = models.IntegerField()
-    price = models.FloatField()
-
-class GroupingPromotion(MyModel):
-    products = models.ManyToManyField(Product)
-    n_item = models.IntegerField()
-    price = models.FloatField()
+    pricings = models.ManyToManyField(PromotionOnGroupPricing, blank=True)
+    def _products(self):
+        text = ''
+        for product in  self.products.all():
+            text += str(product.name) + ' | '
+        return text
+    def _pricings(self):
+        text = ''
+        for pricing in self.pricings.all():
+            text += str(pricing.n_item) + '->'+str(pricing.price)+' | '
+        return text
 
 class ChangeProduct(MyModel):
     old_product = models.ForeignKey(Product, related_name='change_product_old_product', on_delete=models.CASCADE)

@@ -1,4 +1,5 @@
 from django.http.response import HttpResponse
+import openpyxl
 from django.shortcuts import render, reverse
 import datetime
 from django.utils import timezone
@@ -204,27 +205,109 @@ class CashierPage(MyView):
     permission = 9999
 
     def get_total(self, transaction):
+        # calculate price
         subs = SubTransaction.objects.filter(transaction_obj=transaction)
-        total = 0
+        total_promotion = 0
         total_item = 0
-        for sub in subs:
+        total_pure = 0
+        #### group promotion (kill group first)
+        remaining_subs_from_group, group_price, discount_on_group = self.get_discount_from_promotion_on_group(subs)
+        for sub in remaining_subs_from_group:
+            total_pure += sub.n_item * sub.product_obj.price
+            ##### calculate single promotion
             if sub.is_adjust == True:
                 sub.price = sub.price
             else:
                 sub.price = self.get_total_price_from_promotion(
                     sub.product_obj, sub.n_item, sub.product_obj.price)
-
             sub.save()
-            total += sub.price
+            total_promotion += sub.price
             total_item += sub.n_item
+
+        # sumarize
         total_item = int(total_item)
-        if transaction.is_adjust == False:
-            transaction.total = total
-            transaction.save()
+        total_promotion = total_promotion + group_price
+
+        transaction.discount_from_promotion = total_pure - total_promotion # not include promotion-group
+        transaction.discount_from_promotion_on_group = discount_on_group
         transaction.total_item = total_item
-        return subs, total, total_item, transaction
+        # not include is_adjust case
+        if transaction.is_adjust == False:
+            transaction.total = total_promotion
+            transaction.save()
+        return subs, total_promotion, total_item, transaction
+
+    def get_discount_from_promotion_on_group(self, subs):
+        # get all_products with promotion-group
+        subs_with_promotion_list = []
+        all_pros = []
+        all_pro_ids = []
+        remaining_subs = []
+        total_pure = 0
+        for sub in subs:
+            pros = PromotionOnGroup.objects.filter(products=sub.product_obj.id)
+            if pros.exists():
+                assert len(pros) == 1
+                pro = pros[0]
+                total_pure += sub.n_item * sub.product_obj.price
+                subs_with_promotion_list.append(sub)
+                # avoid dup pro in all_pros
+                if pro.id not in all_pro_ids:
+                    all_pros.append(pro)
+                    all_pro_ids.append(pro.id)
+            else:
+                remaining_subs.append(sub)
+        '''
+        _ = [
+             (pro1, [sub1, sub2] )
+             (pro1, [sub1, sub2] )
+             (pro1, [sub1, sub2] )
+        ]
+        '''
+        cat = []
+        for pro in all_pros:
+            sub_list = []
+            # find sub in pro or not
+            for sub in subs_with_promotion_list:
+                sub.price = 0
+                sub.save()
+                if sub.product_obj in pro.products.all():
+                    sub_list.append(sub)
+            cat.append((pro, sub_list))
+        
+        #################################
+        #################################
+        #################################
+        # this code treat that the prices in a group are the same
+        # if not you need to sort by their price 
+        #################################
+        #################################
+        #################################
+
+        # cal group price and discount
+        group_price = 0
+        for pro, sub_list in cat:
+            # sum n_item
+            n_item = 0
+            for sub in sub_list:
+                n_item += sub.n_item
+            
+            # loop from higher number of n_item
+            for pricing in pro.pricings.all().order_by('-price'):
+                if n_item >= pricing.n_item and n_item > 0:
+                    # get group price of each step
+                    group_price += int(n_item/pricing.n_item) * pricing.price
+                    n_item -= int(n_item/pricing.n_item) * pricing.n_item
+            
+            # cal remaining n_item
+            group_price += n_item * sub.product_obj.price # last price from sub  ###### need to solve
+
+        discount = total_pure - group_price
+        return remaining_subs, group_price, discount
+        
 
     def get_total_price_from_promotion(self, product_obj, n_item, price):
+        # calculate single promotion
         all_promotions = Promotion.objects.filter(
             product_obj=product_obj).order_by('-n_item')
         if len(all_promotions) >= 1:
@@ -246,7 +329,6 @@ class CashierPage(MyView):
             total_price = price * n_item
         else:
             1/0
-
         return total_price
 
     def get_transaction(self, profile):
@@ -445,6 +527,12 @@ class CashierPage(MyView):
             subs = SubTransaction.objects.filter(pk=data.get('pk')).delete()
 
             return self.render(request)
+        if act == 'clear all':
+            transaction.delete()
+            new = Transaction.objects.create()
+            profile.current_transaction = new
+            profile.save()
+            return self.render(request)
 
 
 class CategoryCreateView(CreateView):
@@ -467,7 +555,7 @@ class PromotionCreateView(MyView):
         barcode = data.get('barcode')
         try:
             n_item = int(data.get('n_item'))
-            price = float(data.get('n_item'))
+            price = float(data.get('price'))
         except:
             return redirect('add-new-promotion-page')
 
@@ -567,10 +655,63 @@ class SubTransactionPage(MyView):
         return self.render(request)
 
 
-
 class MigratePage(MyView):
     # template_name = 'server/subtransaction.html'
     permission = 9999
+    def migrate2(self, xlsx_path):
+        wb_obj = openpyxl.load_workbook('./path_to_file.xlsx')
+        count = 0
+        for sheet in wb_obj.worksheets:
+            # row and column index start at 1 not 0
+            for i in range(2, 200000):
+                try:
+                    category  = sheet.cell(row=i, column=1).value
+                    barcode  = sheet.cell(row=i, column=2).value
+                    quantity  = sheet.cell(row=i, column=3).value
+                    comment  = sheet.cell(row=i, column=4).value
+                    product_name  = sheet.cell(row=i, column=5).value
+                    price  = sheet.cell(row=i, column=6).value
+                    if category == None and barcode == None:
+                        break
+                    barcode = barcode.replace(' ', '')
+                    try:
+                        quantity = int(quantity)
+                    except:
+                        quantity = 0
+                    try:
+                        price = float(price)
+                    except:
+                        price = 0
+                    # check cat
+                    cats = Category.objects.filter(name=category)
+                    if len(cats) == 0:
+                        cat = Category.objects.create(
+                            name=category
+                        )
+                    elif len(cats) == 1:
+                        cat = cats.first()
+
+                    # check has product?
+                    products = Product.objects.filter(barcode=barcode)
+                    if len(products) != 0:
+                        continue
+
+                    # create
+                    product = Product.objects.create(
+                        category_obj=cat,
+                        barcode=barcode,
+                        name=product_name,
+                        price=price,
+                        inventory=quantity,
+                        description = comment,
+                    )
+                    # print('added', i)
+                    count += 1
+                except:
+                    pass
+        return count
+
+        
 
     def migrate(self, data):
         count = 0
@@ -625,6 +766,8 @@ class MigratePage(MyView):
 
     @has_perm
     def get(self, request, *args, **kwargs):
-        from .m import get_data
-        count = self.migrate(get_data())
+        # from .m import get_data
+        # count = self.migrate(get_data())
+        xlsx_path = './data.xlsx'
+        count  = self.migrate2(xlsx_path)
         return HttpResponse('success'+str(count))

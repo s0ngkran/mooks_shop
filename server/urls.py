@@ -16,6 +16,7 @@ Including another URLconf
 from django.urls import path, include
 from .views import *
 from django.contrib import admin
+from .apis import *
 
 urlpatterns = [
     # path('register/', RegisterPage.as_view(), name='register-page'),
@@ -24,12 +25,16 @@ urlpatterns = [
     path('logout/', LogoutPage.as_view(), name='logout-page'),
 
     # pages
-    path('', IndexPage.as_view(), name='index-page'),
+    # path('', IndexPage.as_view(), name='index-page'),
     path('add-new-product/', AddNewProductPage.as_view(), name='add-new-product-page'),
     path('add-new-promotion/', PromotionCreateView.as_view(), name='add-new-promotion-page'),
     path('create-category/', CategoryCreateView.as_view(), name='create-category-page'),
     path('cashier/', CashierPage.as_view(), name='cashier-page'),
+    path('', CashierPage.as_view(), name='index-page'),
     path('transaction/', TransactionPage.as_view(), name='transaction-page'),
     path('subtransaction/<str:id>', SubTransactionPage.as_view(), name='subtransaction-page'),
     path('migrate/', MigratePage.as_view(), name='subtransaction-page'),
+
+    path('api/test/', APITest.as_view()),
+    path('api/promotion-on-group/', APIPromotionOnGroup.as_view()),
 ]

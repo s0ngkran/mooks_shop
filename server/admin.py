@@ -48,3 +48,10 @@ class PromotionAdmin(admin.ModelAdmin):
         return ['-updated_on']
 
 admin.site.register(Promotion, PromotionAdmin)
+class PromotionOnGroupAdmin(admin.ModelAdmin):
+    list_display = ('code', '_products', '_pricings')
+    search_fields = ['code', '_products', '_pricings']
+    def get_ordering(self, request):
+        return ['-updated_on']
+
+admin.site.register(PromotionOnGroup, PromotionOnGroupAdmin)
