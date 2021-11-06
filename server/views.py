@@ -805,7 +805,7 @@ class DoUpdate(MyView):
 
             # replace react
             copyfile('tempxx/mooks_shop/frontend/static/frontend/main.js', './frontend/static/frontend/main.js')
-            print('success main.js')
+            print('success main.js -.-')
 
             # replace urls.py
             for name in ['urls.py', 'utils.py', 'sers.py', 'models.py','apis.py', 'admin.py', 'views.py']:
