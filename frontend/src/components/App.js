@@ -76,10 +76,22 @@ function App() {
           </div>
 
           {/* center */}
-          <div className="col-sm-2 center-card">
+          <div className="col-sm-3 center-card">
             <p>Pricing</p>
             <ul>
-              {pricingList.map((e, i) => <li key={i}>{e[0]} ชิ้น ราคา {e[1]} บาท</li>)}
+              {pricingList.map((e, i) => <li key={i}>{e[0]} ชิ้น ราคา {e[1]} บาท
+
+                <button onClick={evt => {
+
+                  let arr = pricingList;
+                  const index = arr.indexOf(e);
+                  if (index > -1) {
+                    arr.splice(index, 1);
+                  }
+                  setpricinglist([]);
+                  setpricinglist([...arr]);
+                }} className="btn btn-danger">del</button>
+              </li>)}
             </ul>
             <div className="form-group">
               <div className="flexrow">
