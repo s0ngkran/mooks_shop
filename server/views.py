@@ -785,9 +785,15 @@ class DoUpdate(MyView):
     permission = 9999
     @has_perm
     def get(self, request, *args, **kwargs):
-        # do update
         import os
         a = os.popen('git pull').read()
+        ######################
+        # do update here
+
+        # migrate react
+        a += os.popen('cp update/main.js frontend/static/frontend/main.js')
+
+        #############################
         features =[
             'do this',
             'by thieees',
