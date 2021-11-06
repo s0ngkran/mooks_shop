@@ -808,16 +808,8 @@ class DoUpdate(MyView):
                 copyfile('tempxx/mooks_shop/server/%s'%name, 'server/%s'%name)
 
             # replace react
-            # copyfile('tempxx/mooks_shop/main.js', './frontend/static/frontend/main.js')
-            with open('./frontend/static/frontend/main.txt', 'w') as f:
-                with open('./tempxx/mooks_shop/main.txt', 'r') as r:
-                    dat = r.read()
-                    print('read success')
-                f.write(dat)
-                print('write success')
-            print('do rename')
+            copyfile('tempxx/mooks_shop/main2.js', './frontend/static/frontend/main.js')
             # rename
-            os.rename('./frontend/static/frontend/main.txt',  './frontend/static/frontend/main.js')
             print('rename success')
             
             # delete
