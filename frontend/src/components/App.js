@@ -28,20 +28,44 @@ function App() {
           <div className="col-sm-4 barcode-card">
             <h3>Items of {nameInput === '' ? '...' : nameInput}</h3>
             <ol>
-              {barcodeList.map((e, i) => <li key={i}>{e}</li>)}
+              {barcodeList.map((e, i) => <li key={i}>{e}
+                <button className="btn btn-danger" onClick={evt => {
+                  let arr = barcodeList;
+                  const index = arr.indexOf(e);
+                  if (index > -1) {
+                    arr.splice(index, 1);
+                  }
+                  setbarcodelist([]);
+                  setbarcodelist([...arr]);
+                }}>del</button>
+              </li>)}
             </ol>
             <div className="flexrow">
+              <button onClick={(evt) => {
+                setbarcodelist([]);
+              }} className="btn btn-warning">ClearAll</button>
               <input value={barcodeInput} onKeyDown={(evt) => {
                 if (evt.code == 'Enter' && barcodeInput !== '') {
-                  // alert('hello');
-                  setbarcodelist([...barcodeList, barcodeInput]);
-                  setbarcodeinput('');
+                  if (!barcodeList.includes(barcodeInput)) {
+                    setbarcodelist([...barcodeList, barcodeInput]);
+                    setbarcodeinput('');
+                  }
+                  else {
+                    alert('duplicated barcode');
+                    setbarcodeinput('');
+                  }
                 }
               }} onChange={(evt) => setbarcodeinput(evt.target.value)} type="text" className="form-control" placeholder="Scan Barcode" />
               <button onClick={(evt) => {
                 if (barcodeInput !== '') {
-                  setbarcodelist([...barcodeList, barcodeInput]);
-                  setbarcodeinput('');
+                  if (!barcodeList.includes(barcodeInput)) {
+                    setbarcodelist([...barcodeList, barcodeInput]);
+                    setbarcodeinput('');
+                  }
+                  else {
+                    alert('duplicated barcode');
+                    setbarcodeinput('');
+                  }
                 }
               }} className="btn btn-info">Add</button>
             </div>
@@ -86,7 +110,7 @@ function App() {
               }
               // setnameinput(data.toString());
 
-              axios.post('/api/promotion-on-group/',  data ).then((response) => {
+              axios.post('/api/promotion-on-group/', data).then((response) => {
                 // setnameinput(response.data);
                 if (response.status === 200) {
                   // success
