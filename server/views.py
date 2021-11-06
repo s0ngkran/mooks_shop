@@ -792,7 +792,7 @@ class DoUpdate(MyView):
             'do this',
             'by this',
         ]
-        features = '<br>'+ '<br>- '.join(features)
+        features = '<br>- '+ '<br>- '.join(features)
         self.context.update(
             {
                 'text': 'now you are in v2.4' + features,
