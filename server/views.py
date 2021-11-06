@@ -787,11 +787,11 @@ class DoUpdate(MyView):
     def get(self, request, *args, **kwargs):
         # do update
         import os
-        a = os.popen('ls').read()
-        print(a)
+        a = os.popen('git pull').read()
         self.context.update(
             {
-                'text': 'now you are in v1.0',
+                'text': 'now you are in v2.3',
+                'message': str(a),
             }
         )
         return self.render(request)
