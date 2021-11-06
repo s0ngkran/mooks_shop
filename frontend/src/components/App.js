@@ -19,7 +19,7 @@ function App() {
 
   return (
     <div className="App">
-      <a href="/" className="btn btn-light">Back xxo</a>
+      <a href="/" className="btn btn-light">Back</a>
       <center>
         <br />
         <div>
