@@ -792,6 +792,7 @@ class DoUpdate(MyView):
             {
                 'text': 'now you are in v2.4',
                 'message': str(a),
+                'is_show_update_button': True if 'Already up to date.' not in a else False,
             }
         )
         return self.render(request)
