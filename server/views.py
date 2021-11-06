@@ -803,15 +803,14 @@ class DoUpdate(MyView):
                 # os.popen('cp tempxx/mooks_shop/server/templates/server/%s server/templates/server/%s'%(fname, fname)).read()
                 copyfile('tempxx/mooks_shop/server/templates/server/%s'%fname, 'server/templates/server/%s'%fname)
 
+            # replace react
+            copyfile('tempxx/mooks_shop/frontend/static/frontend/main.js', './frontend/static/frontend/main.js')
+            print('success main.js')
+
             # replace urls.py
             for name in ['urls.py', 'utils.py', 'sers.py', 'models.py','apis.py', 'admin.py', 'views.py']:
                 copyfile('tempxx/mooks_shop/server/%s'%name, 'server/%s'%name)
 
-            # replace react
-            copyfile('tempxx/mooks_shop/frontend/static/frontend/main.js', './frontend/static/frontend/main.js')
-            # rename
-            print('success main.js')
-            
             # delete
             unique_name = str(datetime.datetime.now()).replace(' ','').replace(':', '').replace('.','').replace('-','')
             os.rename('tempxx/mooks_shop', 'tempxx/%s'%unique_name)
