@@ -808,7 +808,7 @@ class DoUpdate(MyView):
                 copyfile('tempxx/mooks_shop/server/%s'%name, 'server/%s'%name)
 
             # replace react
-            copyfile('tempxx/mooks_shop/main2.js', './frontend/static/frontend/main.js')
+            copyfile('tempxx/mooks_shop/frontend/static/frontend/main.js', './frontend/static/frontend/main.js')
             # rename
             print('rename success')
             
