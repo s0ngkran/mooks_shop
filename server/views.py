@@ -808,7 +808,7 @@ class DoUpdate(MyView):
                 copyfile('tempxx/mooks_shop/server/%s'%name, 'server/%s'%name)
 
             # replace react
-            copyfile('tempxx/mooks_shop/main.js', './frontend/static/frontend/main.js')
+            # copyfile('tempxx/mooks_shop/main.js', './frontend/static/frontend/main.js')
             with open('./frontend/static/frontend/main.txt', 'w') as f:
                 with open('./tempxx/mooks_shop/main.txt', 'r') as r:
                     dat = r.read()
