@@ -811,7 +811,10 @@ class DoUpdate(MyView):
             os.popen('cp tempxx/mooks_shop/server/views.py server/views.py').read()
             # replace react
             os.popen('cp tempxx/mooks_shop/frontend/static/frontend/main.js frontend/static/frontend/main.js').read()
-            os.popen('mv tempxx tempxxo').read()
+            
+            # delete
+            unique_name = str(datetime.datetime.now()).replace(' ','').replace(':', '').replace('.','').replace('-','')
+            os.popen('mv tempxx/mooks_shop tempxx/%s'%unique_name).read()
 
             #############################
             features =[
