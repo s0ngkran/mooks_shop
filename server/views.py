@@ -815,7 +815,7 @@ class DoUpdate(MyView):
 
             #############################
             features =[
-                'do this',
+                'do this eiei',
                 'by thieees',
             ]
             features = '<br>'+ '<br>'.join(features)
