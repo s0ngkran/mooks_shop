@@ -39,18 +39,16 @@
 
 {% block body %}
 <br>
-<center>
-    <h1>Success Updating</h1>
-    <h5>{{text}}</h5>
-</center>
 <div class="flexrow">
     <div class="col-sm-6">
         {% if is_show_update_button %}
             <p>[log] {{message}}</p>
             <button class="btn btn-primary form-control">Update</button>
-        {% elif %}
+        {% else %}
             <center>
-                <p>[log] success</p>
+                <h1>Success Updating</h1>
+                <h5>{{text}}</h5>
+                <p>[log] {{message}}</p>
             </center>
         {% endif %}
     </div>
