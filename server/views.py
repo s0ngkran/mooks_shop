@@ -791,7 +791,7 @@ class DoUpdate(MyView):
         # do update here
 
         # migrate react
-        a += os.popen('cp update/main.js frontend/static/frontend/main.js')
+        a += os.popen('cp update/main.js frontend/static/frontend/main.js').read()
 
         #############################
         features =[
