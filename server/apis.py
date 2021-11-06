@@ -54,16 +54,20 @@ class APIPromotionOnGroup(MyAPIView):
         barcode_list = data.get('barcode_list')
         product_list = self.get_product_list(barcode_list)
         if product_list == []:
+            print('product is not va')
             return Response('Product is not valid', status=201)
         
         # check pricing
         pricing_list = data.get('pricing_list')
         pricing_list = self.get_cleaned_pricing_list(pricing_list)
         if pricing_list == []:
+
+            print('price is not va')
             return Response('Pricing is not valid', status=201)
 
         name = data.get('name')
-
+        if name=='' or name==None:
+            name = '-'
         _ = {
             'code': name,
         }

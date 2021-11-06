@@ -123,6 +123,7 @@ function App() {
                   setniteminput('');
                 } else {
                   setshowtext('');
+                  alert(response.data);
                 }
               })
 
