@@ -788,9 +788,13 @@ class DoUpdate(MyView):
         # do update
         import os
         a = os.popen('git pull').read()
+        features ='''
+    - do this
+    - by this
+    '''
         self.context.update(
             {
-                'text': 'now you are in v2.4',
+                'text': 'now you are in v2.4' + features,
                 'message': str(a),
                 'is_show_update_button': True if 'Already up to date.' not in a else False,
             }
