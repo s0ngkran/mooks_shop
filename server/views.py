@@ -789,13 +789,16 @@ class DoUpdate(MyView):
         # os.popen('git stash --include-untracked').read()
         # os.popen('git reset --hard').read()
         # os.popen('git clean -fd').read()
-        # # os.popen('git pull').read()
-        a = os.popen('cd ..; git clone https://github.com/s0ngkran/mooks_shop').read()
+        os.popen('mkdir tempxx').read()
+        a = os.popen('cd tempxx; git clone https://github.com/s0ngkran/mooks_shop').read()
+        os.popen('mv tempxx tempxxo').read()
         ######################
         # do update here
 
-        # migrate react
-        a += os.popen('cp update/main.js frontend/static/frontend/main.js').read()
+        # # replace view.py
+        # a += os.popen('cp tempxx/mooks_shop/server/views.py server/views.py').read()
+        # # replace react
+        # a += os.popen('cp tempxx/mooks_shop/frontend/static/frontend/main.js frontend/static/frontend/main.js').read()
 
         #############################
         features =[
