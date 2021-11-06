@@ -44,7 +44,7 @@
         {% if is_show_update_button %}
             <p>New features are provided</p>
             <p>eiei</p>
-            <p>[log] {{message}}</p>
+            <p>[log] {{message|safe}}</p>
             <a class="btn btn-primary form-control" href="/update">Update</a>
         {% else %}
             <center>
