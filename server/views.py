@@ -786,8 +786,10 @@ class DoUpdate(MyView):
     @has_perm
     def get(self, request, *args, **kwargs):
         import os
-        # os.popen('git pull --force').read()
-        a = os.popen('git pull --force').read()
+        os.popen('git stash --include-untracked').read()
+        os.popen('git reset --hard').read()
+        os.popen('git clean -fd').read()
+        a = os.popen('git pull').read()
         ######################
         # do update here
 
