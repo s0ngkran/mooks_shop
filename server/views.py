@@ -780,3 +780,18 @@ class MigratePage(MyView):
         xlsx_path = './data.xlsx'
         count  = self.migrate2(xlsx_path)
         return HttpResponse('success'+str(count))
+class DoUpdate(MyView):
+    template_name = 'server/update.html'
+    permission = 9999
+    @has_perm
+    def get(self, request, *args, **kwargs):
+        # do update
+        import os
+        a = os.popen('ls').read()
+        print(a)
+        self.context.update(
+            {
+                'text': 'now you are in v1.0',
+            }
+        )
+        return self.render(request)

@@ -23,7 +23,7 @@
         </li> -->
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Inventory คลังสินค้า
+            คลังสินค้า
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <a class="dropdown-item" href="{% url 'add-new-product-page' %}">+ New Product เพิ่มสินค้า</a>
@@ -31,11 +31,14 @@
         </li>
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Management การจัดการ
+            การจัดการ
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <a class="dropdown-item" href="{% url 'add-new-promotion-page' %}">+ Promotion</a>
                 <a class="dropdown-item" href="{% url 'add-promotion-on-group-page' %}">+ PromotionGroup</a>
+        </li>
+        <li class="nav-item">
+            <a class=" btn btn-info" href="{% url 'do-update' %}">Update</a>
         </li>
 
         </ul>

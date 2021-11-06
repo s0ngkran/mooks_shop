@@ -1,0 +1,48 @@
+{% extends './base_nav.html' %}
+{% load humanize %}
+
+{% block head %}
+<style>
+    .is-adjust {
+        color: orange;
+    }
+
+    .header {
+        margin: 3em;
+    }
+
+    .right {
+        text-align: right;
+    }
+
+    tr td {
+        width: 100px;
+    }
+
+    .mytable {
+        table-layout: fixed;
+    }
+
+    #time {
+        width: 300px;
+    }
+
+    .bold-text {
+        font-weight: 600;
+    }
+
+    .center {
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<br>
+<center>
+    <h1>Success Updating</h1>
+    <h5>{{text}}</h5>
+</center>
+<br>
+<br>
+{% endblock %}
