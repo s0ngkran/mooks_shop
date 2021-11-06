@@ -790,7 +790,7 @@ class DoUpdate(MyView):
         a = os.popen('git pull').read()
         self.context.update(
             {
-                'text': 'now you are in v2.3',
+                'text': 'now you are in v2.4',
                 'message': str(a),
             }
         )
