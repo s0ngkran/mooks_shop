@@ -788,10 +788,11 @@ class DoUpdate(MyView):
         # do update
         import os
         a = os.popen('git pull').read()
-        features ='''
-    - do this
-    - by this
-    '''
+        features =[
+            'do this',
+            'by this',
+        ]
+        features = '<br>'+ '<br>'.join(features)
         self.context.update(
             {
                 'text': 'now you are in v2.4' + features,
