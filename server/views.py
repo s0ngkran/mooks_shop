@@ -786,12 +786,13 @@ class DoUpdate(MyView):
     @has_perm
     def get(self, request, *args, **kwargs):
         import os
+        os.popen('git stash').read()
+        os.popen('git stash pop').read()
         a = os.popen('git pull').read()
         ######################
         # do update here
 
         # migrate react
-        a += os.popen('git stash').read()
         a += os.popen('cp update/main.js frontend/static/frontend/main.js').read()
 
         #############################
