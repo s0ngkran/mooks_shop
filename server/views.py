@@ -784,33 +784,56 @@ class DoUpdate(MyView):
     template_name = 'server/update.html'
     permission = 9999
     @has_perm
+    def post(self, request, *args, **kwargs):
+        act = request.POST.get('act')
+        if act == 'update':
+            import os
+            # os.popen('git stash --include-untracked').read()
+            # os.popen('git reset --hard').read()
+            # os.popen('git clean -fd').read()
+            os.popen('mkdir tempxx').read()
+            os.popen('cd tempxx; git clone https://github.com/s0ngkran/mooks_shop').read()
+            ######################
+            # do update here
+            for _,__, fnames in os.walk('tempxx/mooks_shop/server/templates/server/'):
+                print('walk template/server/')
+            for fname in fnames:
+                os.popen('cp tempxx/mooks_shop/server/templates/server/%s server/templates/server/%s'%(fname, fname)).read()
+
+            # replace urls.py
+            os.popen('cp tempxx/mooks_shop/server/urls.py server/urls.py').read()
+            os.popen('cp tempxx/mooks_shop/server/utils.py server/utils.py').read()
+            os.popen('cp tempxx/mooks_shop/server/sers.py server/sers.py').read()
+            os.popen('cp tempxx/mooks_shop/server/models.py server/models.py').read()
+            os.popen('cp tempxx/mooks_shop/server/apis.py server/apis.py').read()
+            os.popen('cp tempxx/mooks_shop/server/admin.py server/admin.py').read()
+            # replace view.py
+            os.popen('cp tempxx/mooks_shop/server/views.py server/views.py').read()
+            # replace react
+            os.popen('cp tempxx/mooks_shop/frontend/static/frontend/main.js frontend/static/frontend/main.js').read()
+            os.popen('mv tempxx tempxxo').read()
+
+            #############################
+            features =[
+                'do this',
+                'by thieees',
+            ]
+            features = '<br>'+ '<br>'.join(features)
+            self.context.update(
+                {
+                    'text': 'now you are in v2.4' + features,
+                    'message': 'success',
+                    'is_show_update_button': False,
+                }
+            )
+            return self.render(request)
+    @has_perm
     def get(self, request, *args, **kwargs):
-        import os
-        # os.popen('git stash --include-untracked').read()
-        # os.popen('git reset --hard').read()
-        # os.popen('git clean -fd').read()
-        os.popen('mkdir tempxx').read()
-        a = os.popen('cd tempxx; git clone https://github.com/s0ngkran/mooks_shop').read()
-        os.popen('mv tempxx tempxxo').read()
-        ######################
-        # do update here
-
-        # # replace view.py
-        # a += os.popen('cp tempxx/mooks_shop/server/views.py server/views.py').read()
-        # # replace react
-        # a += os.popen('cp tempxx/mooks_shop/frontend/static/frontend/main.js frontend/static/frontend/main.js').read()
-
-        #############################
-        features =[
-            'do this',
-            'by thieees',
-        ]
-        features = '<br>'+ '<br>'.join(features)
         self.context.update(
             {
-                'text': 'now you are in v2.4' + features,
-                'message': str(a),
-                'is_show_update_button': True if 'Already up to date.' not in a else False,
+                'text': 'now you are in v2.4',
+                'message': '',
+                'is_show_update_button': True,
             }
         )
         return self.render(request)

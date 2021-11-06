@@ -40,18 +40,22 @@
 {% block body %}
 <br>
 <div class="flexrow">
-    <div class="col-sm-6">
+    <div class="col-sm-4">
+        <center>
         {% if is_show_update_button %}
             <p>New features are provided</p>
-            <p>[log] {{message}}</p>
-            <a class="btn btn-primary form-control" href="/update">Update</a>
+            <!-- <p>[log] {{message}}</p> -->
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="act" value="update">
+                <button class="btn btn-primary form-control">Update</button>
+            </form>
         {% else %}
-            <center>
                 <h1>Successfully Updated</h1>
                 <p>{{text|safe}}</p>
                 <p>[log] {{message}}</p>
-            </center>
         {% endif %}
+        </center>
     </div>
 </div>
 <br>
