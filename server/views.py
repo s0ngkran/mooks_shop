@@ -810,7 +810,7 @@ class DoUpdate(MyView):
             # replace react
             copyfile('tempxx/mooks_shop/frontend/static/frontend/main.js', './frontend/static/frontend/main.js')
             # rename
-            print('rename success')
+            print('success main.js')
             
             # delete
             unique_name = str(datetime.datetime.now()).replace(' ','').replace(':', '').replace('.','').replace('-','')
