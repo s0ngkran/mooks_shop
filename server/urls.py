@@ -36,7 +36,6 @@ urlpatterns = [
     path('migrate/', MigratePage.as_view(), name='subtransaction-page'),
     path('update/', DoUpdate.as_view(), name='do-update'),
 
-
     path('api/test/', APITest.as_view()),
     path('api/promotion-on-group/', APIPromotionOnGroup.as_view()),
 ]
