@@ -5,8 +5,10 @@ server/migrations
 *.pot
 *.pyc
 __pycache__
+server/__pycache__
+mooks_shop/__pycache__
+frontend/__pycache__
 db.sqlite3
-media
 
 # Backup files # 
 *.bak 
