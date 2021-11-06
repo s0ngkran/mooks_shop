@@ -70,6 +70,7 @@ class APIPromotionOnGroup(MyAPIView):
             name = '-'
         _ = {
             'code': name,
+            'created_on': timezone.now(),
         }
         ser = PromotionOnGroupSer(data=_, many=False)
         if ser.is_valid():

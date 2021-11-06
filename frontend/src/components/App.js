@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import ReactDom from 'react-dom';
 import './App.css';
 import axios from 'axios';
@@ -12,6 +12,10 @@ function App() {
   let [priceInput, setpriceinput] = useState('');
   let [nItemInput, setniteminput] = useState('');
   let [showText, setshowtext] = useState('');
+  let [priceText, setpricetext] = useState('Add');
+  const n_item_ref = useRef(null);
+  const priceRef = useRef(null);
+
 
   return (
     <div className="App">
@@ -21,7 +25,7 @@ function App() {
         <div>
           {showText === '' ? '' : <div className="alert alert-success" role="alert">Success +1</div>}
         </div>
-        <h5>Add Promotion on Group</h5>
+        <h5>Add Promotion on <a href="/admin/server/promotionongroup/">Group</a></h5>
         <br />
         <div className="flexrow center">
           {/* left */}
@@ -79,10 +83,38 @@ function App() {
             </ul>
             <div className="form-group">
               <div className="flexrow">
-                <input value={nItemInput} onChange={evt => setniteminput(evt.target.value)} type="number" name="n_item" className="form-control" placeholder="N item" />
+                <input value={nItemInput} ref={n_item_ref}
+                  onChange={evt => setniteminput(evt.target.value)}
+                  type="number" name="n_item"
+                  onFocus={evt =>
+                    setpricetext('Add [Enter]')
+                  }
+                  onKeyDown={evt => {
+                    if (evt.code == 'Enter') {
+                      priceRef.current.focus();
+                    }
+                  }}
+                  className="form-control" placeholder="N item" />
               </div>
               <div className="flexrow">
-                <input value={priceInput} onChange={evt => setpriceinput(evt.target.value)} type="number" name="price" className="form-control" placeholder="Price" />
+                <input value={priceInput} ref={priceRef} onKeyDown={evt => {
+                  if (evt.code == 'Enter') {
+                    if (nItemInput !== '' && priceInput !== '') {
+                      setpricinglist([...pricingList, [nItemInput, priceInput]]);
+                    }
+                    else {
+                      alert('something went wrong');
+                    }
+                    setpriceinput('');
+                    setniteminput('');
+                    n_item_ref.current.focus();
+                  }
+                }} onFocus={
+                  evt => { setpricetext('Add [Enter]'); }
+                } onBlur={evt => { setpricetext('Add') }}
+                  onChange={evt => {
+                    setpriceinput(evt.target.value);
+                  }} type="number" name="price" className="form-control" placeholder="Price" />
               </div>
             </div>
 
@@ -93,11 +125,10 @@ function App() {
                 setpriceinput('');
                 setniteminput('');
               }
-            }} className="btn btn-info form-control">Add</button>
+            }} className="btn btn-info form-control">{priceText}</button>
           </div>
           {/* right right */}
           <div className="col-sm-2 right-card">
-            <p>{showText}---</p>
             <div className="flexrow">
               <input type="text" name="name" value={nameInput} onChange={(evt) => setnameinput(evt.target.value)} className="form-control" placeholder="Promotion Name" />
             </div>
