@@ -43,13 +43,12 @@
     <div class="col-sm-6">
         {% if is_show_update_button %}
             <p>New features are provided</p>
-            <p>eiei</p>
             <p>[log] {{message}}</p>
             <a class="btn btn-primary form-control" href="/update">Update</a>
         {% else %}
             <center>
-                <h1>Success Updating</h1>
-                <h5>{{text|safe}}</h5>
+                <h1>Successfully Updated</h1>
+                <p>{{text|safe}}</p>
                 <p>[log] {{message}}</p>
             </center>
         {% endif %}
