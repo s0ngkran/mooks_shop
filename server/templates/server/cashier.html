@@ -153,7 +153,22 @@
                 <!-- show sub transaction -->
                 {% for sub in subs %}
                 <tr>
-                    <th scope="row">{{sub.n_item | intcomma}} ชิ้น</th>
+                    <td scope="row" width="20" style="padding-right:0px">
+                        {{sub.n_item | intcomma}}
+                    </td>
+                    <form method="post" >
+                        {% csrf_token %}
+                        <input type="hidden" name="act" value="edit number">
+                        <input type="hidden" name="pk" value="{{sub.id}}">
+                        <td width="50px" style="padding-left:5px; padding-right:0px;">
+                            <input type="number" name="num" class="adj-box form-control adjust-sub" placeholder="ชิ้น">
+                        </td>
+                        <td>
+                            <button style="padding:0px" class="btn btn-info">Edit</button>
+                        </td>
+                    </form>
+
+
                     <td>{{sub.product_obj.name}} @{{sub.product_obj.price|floatformat:2}}</td>
 
                     {% if sub.is_adjust %}

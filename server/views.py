@@ -379,7 +379,7 @@ class CashierPage(MyView):
         self.context.update({
             'phase': phase,
             'transaction': transaction,
-            'subs': subs,
+            'subs': subs.order_by('-updated_on'),
             'len_subs': len(subs),
         })
         return super().render(request)
@@ -540,6 +540,26 @@ class CashierPage(MyView):
             profile.current_transaction = new
             profile.save()
             return self.render(request)
+        if act == 'edit number':
+            num = data.get('num')
+            try:
+                num = int(num)
+            except:
+                self.context.update({
+                    'error': 'not correct number',
+                })
+                return self.render(request)
+            subs = SubTransaction.objects.filter(pk=data.get('pk'))
+            if len(subs) != 1:
+                self.context.update({
+                    'error': 'something went wrong',
+                })
+                return self.render(request)
+            sub = subs.first()
+            sub.n_item = num
+            sub.save()
+            return self.render(request)
+
 
 
 class CategoryCreateView(CreateView):
