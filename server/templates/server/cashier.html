@@ -154,7 +154,7 @@
                 {% for sub in subs %}
                 <tr>
                     <th scope="row">{{sub.n_item | intcomma}} ชิ้น</th>
-                    <td>{{sub.product_obj.name}}</td>
+                    <td>{{sub.product_obj.name}} @{{sub.product_obj.price|floatformat:2}}</td>
 
                     {% if sub.is_adjust %}
                     <td class="right is-adjust">{{sub.price |floatformat:2}}</td>
