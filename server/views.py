@@ -480,7 +480,8 @@ class CashierPage(MyView):
 
             return self.get(request)
         if act == 'get money':
-            amount = data.get('amount')
+            cash_amount = data.get('amount')
+            online_amount = data.get('online-amount')
 
             def get_amount(num):
                 try:
@@ -488,21 +489,25 @@ class CashierPage(MyView):
                     return num
                 except:
                     return 0
-            amount = get_amount(amount)
+            cash_amount = get_amount(cash_amount)
+            online_amount = get_amount(online_amount)
+            cash_and_online_amount = cash_amount + online_amount
 
             # cal total
             total = transaction.total
 
             # check amount
-            if amount < total:
+            if cash_and_online_amount < total:
                 self.context.update({
                     'error': 'not enough money',
                 })
                 return self.render(request)
 
             # update received
-            transaction.received = amount
-            transaction.balance = amount - total
+            transaction.received = cash_and_online_amount
+            transaction.received_cash = cash_amount
+            transaction.received_online = online_amount
+            transaction.balance = cash_and_online_amount - total
             transaction.save()
 
             subs = transaction.subtransaction_set.all()

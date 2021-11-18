@@ -61,7 +61,9 @@
     }
 
     .get_money_inp .col-10,
-    .get_money_inp .col-2 {
+    .get_money_inp .col-2,
+    .get_money_inp .col-5
+    {
         padding-left: 0px !important;
         padding-right: 0px !important;
     }
@@ -297,12 +299,16 @@
 
         <!-- input money -->
         <div id="get-money-inp" class="get_money_inp">
+            <!-- form for input money -->
             <form method="post">
                 {% csrf_token %}
                 <div class="flexrow">
                     <input placeholder="Amount" type="hidden" name="act" value="get money">
-                    <div class="col-10">
-                        <input id="get-money-input" type="number" class="form-control" name="amount">
+                    <div class="col-5">
+                        <input placeholder="เงินสด" id="get-money-input" type="number" class="form-control" name="amount">
+                    </div>
+                    <div class="col-5">
+                        <input placeholder="ยอดโอน" class="form-control" type="number" name="online-amount">
                     </div>
                     <div class="col-2">
                         <button class="btn btn-success">Cal</button>

@@ -28,7 +28,7 @@ class ProductAdmin(admin.ModelAdmin):
 admin.site.register(Product, ProductAdmin)
 
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('updated_on','total','get_sub_text')
+    list_display = ('updated_on','total','get_sub_text', 'received', 'received_cash', 'received_online')
     search_fields = ['total', 'updated_on']
     def get_ordering(self, request):
         return ['-updated_on']

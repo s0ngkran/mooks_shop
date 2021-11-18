@@ -49,6 +49,8 @@ class PaymentType(MyModel):
     pass
 class Transaction(MyModel):
     received = models.FloatField(null=True, blank=True)
+    received_cash = models.FloatField(null=True, blank=True)
+    received_online = models.FloatField(null=True, blank=True)
     balance = models.FloatField(null=True, blank=True)
     total = models.FloatField(null=True, blank=True)
     is_adjust = models.BooleanField(default=False)
