@@ -36,25 +36,31 @@
     </form>
 
 </div>
+<br>
 <div class="flexrow">
-    <div class="col-lg-6 myform">
+    <div class="col-lg-10 myform">
         <table class="table table-striped mytable">
             <tbody>
                 <tr class="table-success">
                     <td class="bold-text">{{n_transaction}}</td>
-                    <td id="time" width="300px"> </td>
+                    <td id="time" width="200px"> </td>
                     <td class="right bold-text">{{sum_total|floatformat:2}}</td>
                     <!-- <td>received</td> -->
                     <td class="right bold-text">{{sum_balance|floatformat:2}}</td>
-                    <td class="right"></td>
+                    <td class="right bold-text">{{sum_received_cash|floatformat:2}}</td>
+                    <td class="right bold-text">{{sum_received_online|floatformat:2}}</td>
+                    <td class="right bold-text">{{sum_received|floatformat:2}}</td>
                 </tr>
                 <tr>
                     <td>#</td>
-                    <td id="time" width="300px">Time </td>
+                    <td id="time" width="200px">Time </td>
                     <td class="right">Total</td>
                     <!-- <td>received</td> -->
                     <td class="right">Balance</td>
-                    <td class="right">Payment</td>
+                    <!-- <td class="right">Payment</td> -->
+                    <td class="right">Cash</td>
+                    <td class="right">Online</td>
+                    <td class="right">Cash+Online</td>
                 </tr>
 
                 {% for transaction in transactions %}
@@ -70,7 +76,10 @@
                         <td class="right">{{transaction.total|floatformat:2}}</td>
                         <!-- <td>{{transaction.received}}</td> -->
                         <td class="right">{{transaction.balance|floatformat:2}}</td>
-                        <td class="right">{{transaction.payment_type}}</td>
+                        <!-- <td class="right">{{transaction.payment_type}}</td> -->
+                        <td class="right">{{transaction.received_cash}}</td>
+                        <td class="right">{{transaction.received_online}}</td>
+                        <td class="right">{{transaction.received}}</td>
                     </tr>
                 {% endfor %}
             </tbody>

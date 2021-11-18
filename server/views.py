@@ -622,15 +622,24 @@ class TransactionPage(MyView):
                 updated_on__gte=yesterday, is_success=True).order_by('-updated_on')
         sum_total = 0
         sum_balance = 0
+        sum_received = 0
+        sum_received_cash = 0
+        sum_received_online = 0
         for i, transaction in enumerate(transactions):
             transaction.i = i+1
             sum_total += transaction.total
             sum_balance += transaction.balance
+            sum_received += transaction.received
+            sum_received_cash += transaction.received_cash
+            sum_received_online += transaction.received_online
         self.context.update({
             'transactions': transactions,
             'n_transaction': len(transactions),
             'sum_total': sum_total,
             'sum_balance': sum_balance,
+            'sum_received': sum_received,
+            'sum_received_cash': sum_received_cash,
+            'sum_received_online': sum_received_online,
         })
         return self.render(request)
 
