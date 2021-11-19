@@ -451,7 +451,7 @@
                 show_text.innerHTML = '<h1>Back</h1><br>[ ESC ]';
                 show_text.style.backgroundColor = 'rgb(96,209,255)';
                 show_text.addEventListener('click', () => {
-
+                        location.reload();
                 });
                 get_money_inp.style.display = 'block';
                 barcode_box.style.display = 'none';
@@ -511,8 +511,9 @@
                     evt.preventDefault();
                     fin_form.submit();
                 }
-                // alert(evt.code);
-                if (evt.code == "Escape") {
+                console.log(evt.code=="Escape");
+                if (evt.code == "Escape" ||evt.key=="Escape") {
+                    console.log('hi');
                     location.reload();
                 }
 
