@@ -403,8 +403,12 @@ class CashierPage(MyView):
                 })
                 assert False
 
+
+
             # check n product
             products = Product.objects.filter(barcode=barcode)
+
+
             if len(products) == 0:
                 self.context.update({
                     'error': 'bad barcode <br> <h1>Get Money</h1>'
@@ -416,6 +420,15 @@ class CashierPage(MyView):
                 })
                 return self.render(request)
             product = products.first()
+
+            #  is bank?
+            if product.is_bank == True:
+                sub = SubTransaction.objects.create(
+                    code="bank",
+                    transaction_obj = transaction,
+                    product_obj = product,
+                )
+                return redirect('online-amount')
 
             # check same product appear in transaction
             subs = SubTransaction.objects.filter(transaction_obj=transaction)
@@ -636,10 +649,10 @@ class TransactionPage(MyView):
         if date:
             date = self.get_naive_date(date)
             transactions = Transaction.objects.filter(
-                updated_on__gte=date, updated_on__lte=date+timezone.timedelta(days=1) ,is_success=True).order_by('-updated_on')
+                updated_on__gte=date, subtransaction__product_obj__is_bank=False,  updated_on__lte=date+timezone.timedelta(days=1) ,is_success=True).order_by('-updated_on')
         else:
             transactions = Transaction.objects.filter(
-                updated_on__gte=yesterday, is_success=True).order_by('-updated_on')
+                updated_on__gte=yesterday, subtransaction__product_obj__is_bank=False, is_success=True).order_by('-updated_on')
         sum_total = 0
         sum_balance = 0
         sum_received = 0
@@ -873,3 +886,65 @@ class DoUpdate(MyView):
             }
         )
         return self.render(request)
+
+class OnlineAmount(MyView):
+    template_name = 'server/online_amount.html'
+    permission = 9999
+
+    @has_perm
+    def get(self, request, *args, **kwargs):
+        try:
+            sub = SubTransaction.objects.all().order_by('-updated_on').first()
+            self.context.update({
+                'sub': sub,
+                'is_success': None,
+            })
+            return self.render(request)
+        except:
+            print('no sub')
+            return redirect('index-page')
+    @has_perm
+    def post(self, request, *args, **kwargs):
+        try:
+            sub = SubTransaction.objects.all().order_by('-updated_on').first()
+        except:
+            print('no sub')
+            return redirect('index-page')
+        
+        data = request.POST
+
+        act = data.get('act')
+        if act == 'online amount':
+            price = data.get('price')
+            try:
+                price = int(price)
+            except:
+                print('[%s] is not int'%str(price))
+                self.context.update({
+                    'is_success': False,
+                })
+                return self.get(request)
+
+            sub.product_obj.price = price
+            sub.save()
+            self.context.update({
+                'is_success': True,
+                'sub': sub,
+            })
+            return self.render(request)
+        
+        if act == 'cancel':
+            return redirect('index-page')
+        
+        if act == 'confirm':
+            profile = request.user.profile_set.all().first()
+            if profile == None:
+                return redirect('logout-page')
+            transaction = CashierPage().get_transaction(profile)
+            transaction.is_success = True
+            transaction.save()
+            new = Transaction.objects.create()
+            profile.current_transaction = new
+            profile.save()
+            self.context = {}
+            return redirect('cashier-page')

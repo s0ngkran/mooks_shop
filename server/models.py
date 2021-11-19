@@ -29,6 +29,7 @@ class Product(MyModel):
     name = models.CharField(max_length=255, null=True, blank=True)
     price = models.FloatField(null=True, blank=True)
     inventory = models.IntegerField(default=0)
+    is_bank = models.BooleanField(default=False)
     def __str__(self):
         return str(self.name)
 

@@ -1,0 +1,63 @@
+{% extends './base_nav.html' %}
+{% load humanize %}
+
+{% block head %}
+<style>
+    .flex-center {
+        text-align: center;
+    }
+
+    .two-button button, .two-button .col-6 {
+        padding-left: 0px !important;
+        padding-right: 0px !important;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<br>
+<div class="flexrow">
+    <div class="flexcol flex-center">
+        <h4>บันทึกยอดโอน</h4>
+        <br>
+        <h5>บัญชี {{sub.product_obj.code}}</h5>
+        <h6>รายละเอียด {{sub.product_obj.description}}</h6>
+        <br>
+    </div>
+</div>
+<div class="flexrow">
+    <div class="col-4">
+        {% if is_success == None %}
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="act" value="online amount">
+            <input class="form-control" name="price" placeholder="ยอดโอน" type="number" required>
+            <button class="btn btn-primary form-control">Add</button>
+        </form>
+        {% endif %}
+
+        {% if is_success %}
+        <br>
+        <h3 class="alert-success">
+            {{sub.product_obj.price}}
+        </h3>
+        <div class="row two-button">
+            <div class="col-6">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="act" value="cancel">
+                    <button class="btn btn-outline-primary form-control">Cancel</button>
+                </form>
+            </div>
+            <div class="col-6">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="act" value="confirm">
+                    <button class="btn btn-primary form-control">Confirm</button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

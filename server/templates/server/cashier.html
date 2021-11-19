@@ -125,6 +125,9 @@
         padding: 0px !important;
 
     }
+    .text-center{
+        text-align: center;
+    }
 </style>
 {% endblock %}
 
@@ -152,24 +155,22 @@
                 <!-- show sub transaction -->
                 {% for sub in subs %}
                 <tr>
-                    <td scope="row" width="20" style="padding-right:0px">
-                        {{sub.n_item | intcomma}}
-                    </td>
                     <form method="post">
                         {% csrf_token %}
                         <input type="hidden" name="act" value="edit number">
                         <input type="hidden" name="pk" value="{{sub.id}}">
                         <td width="50px" style="padding-left:5px; padding-right:0px;">
-                            <input type="number" name="num" class="adj-box form-control adjust-sub" placeholder="ชิ้น">
-                        </td>
-                        <td width="50px">
-                            <button style="padding:0px" class="btn btn-info">Edit</button>
+                            <input type="number" name="num" class="text-center adj-box form-control adjust-sub" value="{{sub.n_item | intcomma}}">
                         </td>
                     </form>
+                    <td scope="row" width="30" class="no-pad-horizontal">
+                        ชิ้น
+                    </td>
+                    <td width="10"></td>
 
 
-                    <td>{{sub.product_obj.name}} </td>
-                    <td width="100px">{{sub.product_obj.price|floatformat:2}} x {{sub.n_item|intcomma}}</td>
+                    <td class="no-pad-horizontal">{{sub.product_obj.name}} </td>
+                    <td width="100px" class="no-pad-horizontal">{{sub.product_obj.price|floatformat:2}} x {{sub.n_item|intcomma}}</td>
 
                     {% if sub.is_adjust %}
                     <td class="right is-adjust" width="80px">{{sub.price |floatformat:2}}</td>
@@ -207,7 +208,8 @@
                     <tr class="table-light">
                         <td colspan="6" class="right bold-text">Gross</td>
                         <!-- <td class="right" width="80px"></td> -->
-                        <td class="right" width="80px">{{transaction.total|add:transaction.discount_from_promotion_on_group|floatformat:2}}</td>
+                        <td class="right" width="80px">
+                            {{transaction.total|add:transaction.discount_from_promotion_on_group|floatformat:2}}</td>
                     </tr>
                 </div>
 
@@ -216,7 +218,8 @@
                     <tr class="table-light">
                         <td colspan="6" class="right bold-text">Discount</td>
                         <!-- <td class="right" width="80px"></td> -->
-                        <td class="right" width="80px">{{transaction.discount_from_promotion_on_group|floatformat:2}}</td>
+                        <td class="right" width="80px">{{transaction.discount_from_promotion_on_group|floatformat:2}}
+                        </td>
                     </tr>
                 </div>
 
@@ -255,7 +258,7 @@
                     <!-- get money -->
                     <div class="received">
                         <tr class="table-light">
-                            <td colspan="2" class="right bold">Received</td>
+                            <td colspan="6" class="right bold">Received</td>
                             <td class="right bold">{{transaction.received}}</td>
                         </tr>
                     </div>
@@ -263,7 +266,7 @@
                     <!-- balance -->
                     <div class="balance">
                         <tr class="table-light">
-                            <td colspan="2" class="right bold">Balance</td>
+                            <td colspan="6" class="right bold">Balance</td>
                             <td class="right bold">{{transaction.balance}} </td>
                         </tr>
                     </div>
