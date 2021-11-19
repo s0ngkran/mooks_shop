@@ -62,8 +62,7 @@
 
     .get_money_inp .col-10,
     .get_money_inp .col-2,
-    .get_money_inp .col-5
-    {
+    .get_money_inp .col-5 {
         padding-left: 0px !important;
         padding-right: 0px !important;
     }
@@ -138,7 +137,7 @@
     <br>
 </div>
 <div class="flexrow">
-    <div class="col-lg-6">
+    <div class="col-lg-8">
         <!-- Product List -->
         <div class="flexrow header">
 
@@ -156,30 +155,34 @@
                     <td scope="row" width="20" style="padding-right:0px">
                         {{sub.n_item | intcomma}}
                     </td>
-                    <form method="post" >
+                    <form method="post">
                         {% csrf_token %}
                         <input type="hidden" name="act" value="edit number">
                         <input type="hidden" name="pk" value="{{sub.id}}">
                         <td width="50px" style="padding-left:5px; padding-right:0px;">
                             <input type="number" name="num" class="adj-box form-control adjust-sub" placeholder="ชิ้น">
                         </td>
-                        <td>
+                        <td width="50px">
                             <button style="padding:0px" class="btn btn-info">Edit</button>
                         </td>
                     </form>
 
 
-                    <td>{{sub.product_obj.name}} @{{sub.product_obj.price|floatformat:2}}</td>
+                    <td>{{sub.product_obj.name}} </td>
+                    <td width="100px">{{sub.product_obj.price|floatformat:2}} x {{sub.n_item|intcomma}}</td>
 
                     {% if sub.is_adjust %}
-                    <td class="right is-adjust">{{sub.price |floatformat:2}}</td>
+                    <td class="right is-adjust" width="80px">{{sub.price |floatformat:2}}</td>
                     {% else %}
-                    <td class="right">{{sub.price |floatformat:2}}</td>
+                    <td class="right" width="80px">{{sub.price |floatformat:2}}</td>
                     {% endif %}
+
+                    <td width="80px" class="right">{{sub.product_obj.price|mul:sub.n_item|floatformat:2}}</td>
 
                     <!-- a product discount -->
                     <td width="80px" class="no-pad-horizontal">
-                        <input id="sub;{{sub.id}}" type="number" placeholder="ลดเหลือ" class="adj-box form-control adjust-sub" name="price" maxlength="4" size="4">
+                        <input id="sub;{{sub.id}}" type="number" placeholder="ลดเหลือ"
+                            class="adj-box form-control adjust-sub" name="price" maxlength="4" size="4">
                     </td>
                     <td width="30px" class="no-pad-horizontal">
                         <form method="post">
@@ -191,11 +194,39 @@
                     </td>
                 </tr>
                 {% endfor %}
+                <!-- <div class="bottom">
+                    <tr class="table-light">
+                        <td colspan="5" class="right bold-text">Discount from Promotion</td>
+                        <td class="right" width="80px"></td>
+                        <td class="right" width="80px">{{transaction.discount_from_promotion}}</td>
+                        
+                    </tr>
+                </div> -->
+                <!-- full price -->
+                <div class="bottom">
+                    <tr class="table-light">
+                        <td colspan="6" class="right bold-text">Total</td>
+                        <!-- <td class="right" width="80px"></td> -->
+                        <td class="right" width="80px">{{transaction.total|add:transaction.discount_from_promotion_on_group|floatformat:2}}</td>
+                    </tr>
+                </div>
+
+                <!-- discount -->
+                <div class="bottom">
+                    <tr class="table-light">
+                        <td colspan="6" class="right bold-text">Discount</td>
+                        <!-- <td class="right" width="80px"></td> -->
+                        <td class="right" width="80px">{{transaction.discount_from_promotion_on_group|floatformat:2}}</td>
+                    </tr>
+                </div>
 
                 <div class="bottom">
                     <!-- total -->
                     <tr class="table-light">
-                        <td colspan="4" class="right bold-text">Total {{transaction.total_item|intcomma}} items</td>
+                        <td colspan="6" class="right bold-text">Net {{transaction.total_item|intcomma}} items</td>
+
+                        <!-- <td class="right" width="80px">({{transaction.total|add:transaction.discount_from_promotion_on_group}})</td> -->
+                        <!-- <td></td> -->
 
                         {% if transaction.is_adjust %}
                         <td class="right bold-text is-adjust">
@@ -214,7 +245,8 @@
                                 {% csrf_token %}
                                 <input type="hidden" name="act" value="adjust total">
 
-                                <input id="adjust_total_input" type="number" placeholder="ลดเหลือ" class="adj-box form-control" name="price" maxlength="4" size="4">
+                                <input id="adjust_total_input" type="number" placeholder="ลดเหลือ"
+                                    class="adj-box form-control" name="price" maxlength="4" size="4">
                             </form>
                         </td>
                     </tr>
@@ -239,7 +271,7 @@
 
                 </div>
                 <tr class="table-light">
-                    <td colspan="7">
+                    <td colspan="8">
                         <form method="post">
                             {% csrf_token %}
                             <input type="hidden" name="act" value="clear all">
@@ -259,7 +291,7 @@
 
 
     <!-- right view -->
-    <div class="col-lg-6">
+    <div class="col-lg-4">
         <!-- status scan barcode -->
         <div id="scan-barcode" class="show-text">
             <img src="/media/scan.gif" width="250" alt="">
@@ -280,7 +312,8 @@
                         <!-- barcode inp -->
                         <div class="col-10">
 
-                            <input id="barcode-input" class="form-control" type="text" name="barcode" placeholder="Barcode" required>
+                            <input id="barcode-input" class="form-control" type="text" name="barcode"
+                                placeholder="Barcode" required>
                         </div>
                         <!-- add button -->
                         <div class="col-2">
@@ -306,7 +339,7 @@
             <div class="flexrow">
 
                 <button id="show-text" class="btn btn-success form-control">
-                    <h1> Get Money รับเงิน</h1><br>
+                    <h1>รับเงิน</h1><br>
                     <p> [ Enter ] </p>
                 </button>
             </div>
@@ -320,7 +353,8 @@
                 <div class="flexrow">
                     <input placeholder="Amount" type="hidden" name="act" value="get money">
                     <div class="col-5">
-                        <input placeholder="เงินสด" id="get-money-input" type="number" class="form-control" name="amount">
+                        <input placeholder="เงินสด" id="get-money-input" type="number" class="form-control"
+                            name="amount">
                     </div>
                     <div class="col-5">
                         <input placeholder="ยอดโอน" class="form-control" type="number" name="online-amount">
