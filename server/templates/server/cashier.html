@@ -125,7 +125,8 @@
         padding: 0px !important;
 
     }
-    .text-center{
+
+    .text-center {
         text-align: center;
     }
 </style>
@@ -144,7 +145,7 @@
         <!-- Product List -->
         <div class="flexrow header">
 
-            <h5>Product List 
+            <h5>Product List
                 {% if transaction.bank.name != None %}
                 [ {{transaction.bank.name}} ]
                 {% endif %}
@@ -164,7 +165,8 @@
                         <input type="hidden" name="act" value="edit number">
                         <input type="hidden" name="pk" value="{{sub.id}}">
                         <td width="50px" style="padding-left:5px; padding-right:0px;">
-                            <input type="number" name="num" class="text-center adj-box form-control adjust-sub" value="{{sub.n_item | intcomma}}">
+                            <input type="number" name="num" class="text-center adj-box form-control adjust-sub"
+                                value="{{sub.n_item | intcomma}}">
                         </td>
                     </form>
                     <td scope="row" width="30" class="no-pad-horizontal">
@@ -174,7 +176,8 @@
 
 
                     <td class="no-pad-horizontal">{{sub.product_obj.name}} </td>
-                    <td width="100px" class="no-pad-horizontal">{{sub.product_obj.price|floatformat:2}} x {{sub.n_item|intcomma}}</td>
+                    <td width="100px" class="no-pad-horizontal">{{sub.product_obj.price|floatformat:2}} x
+                        {{sub.n_item|intcomma}}</td>
 
                     {% if sub.is_adjust %}
                     <td class="right is-adjust" width="80px">{{sub.price |floatformat:2}}</td>
@@ -437,7 +440,7 @@
                     show_text.style.backgroundColor = 'green';
                     show_text.innerHTML = '<h1> Save</h1> <br>   <p>[ Enter ]  </p>';
                     show_text.addEventListener('click', () => {
-                        fin_form.submit();
+                        location.reload();
                     });
                 }
                 barcode_input.focus();
@@ -447,6 +450,9 @@
                 // show_text.style.display = 'none';
                 show_text.innerHTML = '<h1>Back</h1><br>[ ESC ]';
                 show_text.style.backgroundColor = 'rgb(96,209,255)';
+                show_text.addEventListener('click', () => {
+
+                });
                 get_money_inp.style.display = 'block';
                 barcode_box.style.display = 'none';
                 get_money_input.focus();
