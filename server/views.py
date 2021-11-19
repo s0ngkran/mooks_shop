@@ -208,8 +208,8 @@ class CashierPage(MyView):
     def get_total(self, transaction):
         # calculate price
         subs = SubTransaction.objects.filter(transaction_obj=transaction)
+
         total_promotion = 0
-        total_item = 0
         total_pure = 0
         #### group promotion (kill group first)
         remaining_subs_from_group, group_price, discount_on_group = self.get_discount_from_promotion_on_group(subs)
@@ -223,10 +223,14 @@ class CashierPage(MyView):
                     sub.product_obj, sub.n_item, sub.product_obj.price)
             sub.save()
             total_promotion += sub.price
-            total_item += sub.n_item
 
         # sumarize
-        total_item = int(total_item)
+        def count_n_item(subs):
+            total_item = 0
+            for sub in subs:
+                total_item += sub.n_item
+            return total_item
+        total_item = count_n_item(subs)
         total_promotion = total_promotion + group_price
 
         transaction.discount_from_promotion = total_pure - total_promotion # not include promotion-group
@@ -485,6 +489,7 @@ class CashierPage(MyView):
                 sub.price = price
                 sub.save()
             else:
+                print('subs= ', subs, sub_id)
                 assert False
 
             return self.get(request)

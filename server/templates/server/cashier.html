@@ -160,13 +160,13 @@
                 <!-- show sub transaction -->
                 {% for sub in subs %}
                 <tr>
-                    <form method="post">
+                    <form method="post" id="change num">
                         {% csrf_token %}
                         <input type="hidden" name="act" value="edit number">
                         <input type="hidden" name="pk" value="{{sub.id}}">
                         <td width="50px" style="padding-left:5px; padding-right:0px;">
-                            <input type="number" name="num" class="text-center adj-box form-control adjust-sub"
-                                value="{{sub.n_item | intcomma}}">
+                            <input type="number" onblur="this.form.submit()" name="num"
+                                class="text-center adj-box form-control adjust-sub" value="{{sub.n_item | intcomma}}">
                         </td>
                     </form>
                     <td scope="row" width="30" class="no-pad-horizontal">
@@ -187,17 +187,29 @@
 
                     <td width="80px" class="right">{{sub.product_obj.price|mul:sub.n_item|floatformat:2}}</td>
 
+                    <form id="adjust sub" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="act" value="adjust sub">
+                        <input type="hidden" name="sub_id" value="{{sub.id}}">
+                        <td width="80px" style="padding-left:5px; padding-right:0px;">
+
+                                <input type="number" onblur="this.form.submit()" placeholder="ลดเหลือ" name="price"
+                                    class="text-center adj-box form-control adjust-sub">
+                                <!-- <button class="text-center adj-box form-control btn btn-outline-warning">แก้</button> -->
+                        </td>
+                    </form>
+
                     <!-- a product discount -->
-                    <td width="80px" class="no-pad-horizontal">
+                    <!-- <td width="80px" class="no-pad-horizontal">
                         <input id="sub;{{sub.id}}" type="number" placeholder="ลดเหลือ"
                             class="adj-box form-control adjust-sub" name="price" maxlength="4" size="4">
-                    </td>
+                    </td> -->
                     <td width="30px" class="no-pad-horizontal">
                         <form method="post">
                             {% csrf_token %}
                             <input type="hidden" name="act" value="del item">
                             <input type="hidden" name="pk" value="{{sub.pk}}">
-                            <button class="btn btn-danger">ลบ</button>
+                            <button class="btn btn-outline-danger">ลบ</button>
                         </form>
                     </td>
                 </tr>
@@ -377,7 +389,7 @@
                     </div>
                     {% endif %}
                     <div class="col-2">
-                        <button class="btn btn-success">Cal</button>
+                        <button class="btn btn-success">Enter</button>
                     </div>
                 </div>
             </form>
@@ -413,8 +425,8 @@
             const adjust_total_form = document.getElementById('adjust total');
             const adjust_total_input = document.getElementById('adjust_total_input');
             const balance_num_box = document.getElementById('balance-num-box');
-            const adjust_sub_form = document.getElementById('adjust sub');
-            const adjust_sub_inputs = document.getElementsByClassName('adjust-sub');
+            // const adjust_sub_form = document.getElementById('adjust sub');
+            // const adjust_sub_inputs = document.getElementsByClassName('adjust-sub');
             let phase = document.getElementById('phase').value;
             window.onload = () => {
                 // alert('hi');
@@ -449,10 +461,10 @@
             }
             function doPayment() {
                 // show_text.style.display = 'none';
-                show_text.innerHTML = '<h1>Back</h1><br>[ ESC ]';
+                show_text.innerHTML = '<h1>Back</h1><br>[ -- ]';
                 show_text.style.backgroundColor = 'rgb(96,209,255)';
                 show_text.addEventListener('click', () => {
-                        location.reload();
+                    location.reload();
                 });
                 get_money_inp.style.display = 'block';
                 barcode_box.style.display = 'none';
@@ -466,17 +478,20 @@
                 doPayment();
             });
 
-            function getSubId() {
-                for (var i = 0; i < adjust_sub_inputs.length; i++) {
-                    sub = adjust_sub_inputs[i];
-                    if (sub.value != '') {
-                        subId = sub.id.split(';')[1];
-                        price = sub.value;
-                        return [subId, price];
-                    }
-                }
-                return null;
-            }
+            // function getSubId() {
+            //     // alert(adjust_sub_inputs);
+            //     for (var i = 0; i < adjust_sub_inputs.length; i++) {
+            //         sub = adjust_sub_inputs[i];
+            //         // console.log(sub);
+            //         // alert(sub.value);
+            //         if (sub.value != '') {
+            //             subId = sub.id.split(';')[1];
+            //             price = sub.value;
+            //             return [subId, price];
+            //         }
+            //     }
+            //     return null;
+            // }
 
             function addFormData(formEle, key, value) {
                 let inputEle = document.createElement('input');
@@ -489,16 +504,18 @@
             document.addEventListener('keydown', (evt) => {
                 // console.log(evt);
                 // alert(barcode_input.value);
+                console.log(phase);
                 if (phase == 'start') {
                     if (evt.code == 'Enter' && adjust_total_input.value != '') {
                         adjust_total_form.submit();
                     }
-                    else if (evt.code == 'Enter' && getSubId() != null) {
-                        [subId, price] = getSubId();
-                        addFormData(adjust_sub_form, 'price', price);
-                        addFormData(adjust_sub_form, 'sub_id', subId);
-                        adjust_sub_form.submit();
-                    }
+                    // else if (evt.code == 'Enter' && getSubId() != null) {
+                    //     [subId, price] = getSubId();
+                    //     // console.log(subId);
+                    //     addFormData(adjust_sub_form, 'price', price);
+                    //     addFormData(adjust_sub_form, 'sub_id', subId);
+                    //     adjust_sub_form.submit();
+                    // }
                     else if (evt.code == 'Enter' && barcode_input.value == '') {
                         evt.preventDefault();
                         if (Number(len_subs.value) >= 1) {
@@ -512,11 +529,12 @@
                     evt.preventDefault();
                     fin_form.submit();
                 }
-                console.log(evt.code=="Escape");
-                if (evt.code == "Escape" ||evt.key=="Escape") {
-                    console.log('hi');
-                    location.reload();
-                }
+                // console.log(evt.code=="Escape");
+                // if (evt.code == "Escape" || evt.key == "Escape" && get_money_inp.hasFocus()) {
+                //     alert('here');
+                //     console.log('hi');
+                //     location.reload();
+                // }
 
             });
         </script>
