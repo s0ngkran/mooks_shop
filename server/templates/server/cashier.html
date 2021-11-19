@@ -440,7 +440,8 @@
                     show_text.style.backgroundColor = 'green';
                     show_text.innerHTML = '<h1> Save</h1> <br>   <p>[ Enter ]  </p>';
                     show_text.addEventListener('click', () => {
-                        location.reload();
+                        // location.reload();
+                        fin_form.submit();
                     });
                 }
                 barcode_input.focus();
