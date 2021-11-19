@@ -1,4 +1,5 @@
 from django.http.response import HttpResponse
+from datetime import date, timedelta
 import openpyxl
 from django.shortcuts import render, reverse
 import datetime
@@ -394,6 +395,7 @@ class CashierPage(MyView):
         profile = request.user.profile_set.all().first()
         transaction = self.get_transaction(profile)
 
+
         if act == 'scan barcode':
             # find product
             barcode = request.POST.get('barcode')
@@ -403,11 +405,8 @@ class CashierPage(MyView):
                 })
                 assert False
 
-
-
             # check n product
             products = Product.objects.filter(barcode=barcode)
-
 
             if len(products) == 0:
                 self.context.update({
@@ -423,12 +422,9 @@ class CashierPage(MyView):
 
             #  is bank?
             if product.is_bank == True:
-                sub = SubTransaction.objects.create(
-                    code="bank",
-                    transaction_obj = transaction,
-                    product_obj = product,
-                )
-                return redirect('online-amount')
+                transaction.bank = product
+                transaction.save()
+                return self.render(request)
 
             # check same product appear in transaction
             subs = SubTransaction.objects.filter(transaction_obj=transaction)
@@ -638,6 +634,7 @@ class TransactionPage(MyView):
         unaware_date = datetime.datetime.strptime(date_string, date_format)
         # aware_date = pytz.utc.localize(unaware_date)
         return unaware_date
+
     @has_perm
     def get(self, request, *args, **kwargs):
         today = timezone.now()
@@ -649,10 +646,10 @@ class TransactionPage(MyView):
         if date:
             date = self.get_naive_date(date)
             transactions = Transaction.objects.filter(
-                updated_on__gte=date, subtransaction__product_obj__is_bank=False,  updated_on__lte=date+timezone.timedelta(days=1) ,is_success=True).order_by('-updated_on')
+                updated_on__gte=date,  updated_on__lte=date+timezone.timedelta(days=1), is_success=True).order_by('-updated_on')
         else:
             transactions = Transaction.objects.filter(
-                updated_on__gte=yesterday, subtransaction__product_obj__is_bank=False, is_success=True).order_by('-updated_on')
+                updated_on__gte=yesterday,  is_success=True).order_by('-updated_on')
         sum_total = 0
         sum_balance = 0
         sum_received = 0
@@ -660,11 +657,14 @@ class TransactionPage(MyView):
         sum_received_online = 0
         for i, transaction in enumerate(transactions):
             transaction.i = i+1
-            sum_total += transaction.total
-            sum_balance += transaction.balance
-            sum_received += transaction.received
-            sum_received_cash += transaction.received_cash
-            sum_received_online += transaction.received_online
+            try:
+                sum_total += transaction.total
+                sum_balance += transaction.balance
+                sum_received += transaction.received
+                sum_received_cash += transaction.received_cash
+                sum_received_online += transaction.received_online
+            except:
+                pass
         self.context.update({
             'transactions': transactions,
             'n_transaction': len(transactions),
@@ -893,58 +893,51 @@ class OnlineAmount(MyView):
 
     @has_perm
     def get(self, request, *args, **kwargs):
-        try:
-            sub = SubTransaction.objects.all().order_by('-updated_on').first()
-            self.context.update({
-                'sub': sub,
-                'is_success': None,
-            })
-            return self.render(request)
-        except:
-            print('no sub')
-            return redirect('index-page')
+        bank = kwargs.get('bank')
+        
+        banks = Product.objects.filter(is_bank=True)
+        if kwargs.get('bank') == None:
+            try:
+                bank = banks.first()
+            except:pass
+
+        
+        all_trans = Transaction.objects.filter(bank=bank)
+        call_back = 5
+        enddate = date.today() - timedelta(days=call_back)
+        x_data = []
+        y_data = []
+        for i in range(call_back+1):
+            startdate = enddate
+            enddate = startdate + timedelta(days = 1)
+            trans = all_trans.filter(updated_on__range = [startdate, enddate])
+            value = 0
+            for tran in trans:
+                if tran.received_online != None:
+                    value += tran.received_online
+            y_data.append(float(value))
+            x_data.append(startdate.strftime('%Y-%m-%d'))
+
+        bank.x_data = x_data
+        bank.y_data =y_data
+        self.context.update({
+            'banks': banks,
+            'bank': bank,
+        })
+        return self.render(request)
+
+    def find_transaction(self, request):
+        profile = request.user.profile_set.all().first()
+        if profile == None:
+            return redirect('logout-page')
+        transaction = CashierPage().get_transaction(profile)
+        return profile, transaction
+
     @has_perm
     def post(self, request, *args, **kwargs):
-        try:
-            sub = SubTransaction.objects.all().order_by('-updated_on').first()
-        except:
-            print('no sub')
-            return redirect('index-page')
-        
         data = request.POST
-
         act = data.get('act')
-        if act == 'online amount':
-            price = data.get('price')
-            try:
-                price = int(price)
-            except:
-                print('[%s] is not int'%str(price))
-                self.context.update({
-                    'is_success': False,
-                })
-                return self.get(request)
-
-            sub.product_obj.price = price
-            sub.save()
-            self.context.update({
-                'is_success': True,
-                'sub': sub,
-            })
-            return self.render(request)
-        
-        if act == 'cancel':
-            return redirect('index-page')
-        
-        if act == 'confirm':
-            profile = request.user.profile_set.all().first()
-            if profile == None:
-                return redirect('logout-page')
-            transaction = CashierPage().get_transaction(profile)
-            transaction.is_success = True
-            transaction.save()
-            new = Transaction.objects.create()
-            profile.current_transaction = new
-            profile.save()
-            self.context = {}
-            return redirect('cashier-page')
+        if act == 'search':
+            bank = Product.objects.get(is_bank=True, pk=data.get('pk'))
+            print('bakn', bank)
+            return self.get(request, **{'bank': bank})

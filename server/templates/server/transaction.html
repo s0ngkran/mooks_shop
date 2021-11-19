@@ -38,7 +38,7 @@
 </div>
 <br>
 <div class="flexrow">
-    <div class="col-lg-10 myform">
+    <div class="col-lg-12 myform">
         <table class="table table-striped mytable">
             <tbody>
                 <tr class="table-success">
@@ -78,7 +78,7 @@
                         <td class="right">{{transaction.balance|floatformat:2}}</td>
                         <!-- <td class="right">{{transaction.payment_type}}</td> -->
                         <td class="right">{{transaction.received_cash}}</td>
-                        <td class="right">{{transaction.received_online}}</td>
+                        <td class="right">[{{transaction.bank.name}}]<br>{{transaction.received_online}}</td>
                         <td class="right">{{transaction.received}}</td>
                     </tr>
                 {% endfor %}

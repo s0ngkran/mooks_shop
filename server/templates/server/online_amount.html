@@ -7,57 +7,73 @@
         text-align: center;
     }
 
-    .two-button button, .two-button .col-6 {
+    .two-button button,
+    .two-button .col-6 {
         padding-left: 0px !important;
         padding-right: 0px !important;
     }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+</script>
 {% endblock %}
 
 {% block body %}
 <br>
 <div class="flexrow">
     <div class="flexcol flex-center">
-        <h4>บันทึกยอดโอน</h4>
+        <div class="flexrow">
+            <h4>ยอดโอน</h4>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="act" value="search">
+                <div class="input-group mb-3">
+                    <select onChange="this.form.submit()" class="custom-select" id="inputGroupSelect01" name="pk">
+                        <option selected>Account</option>
+                        {% for bank in banks %}
+                        <option value="{{bank.pk}}">{{bank.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
+
+        </div>
         <br>
-        <h5>บัญชี {{sub.product_obj.code}}</h5>
-        <h6>รายละเอียด {{sub.product_obj.description}}</h6>
+        <h5>บัญชี {{bank.name}}</h5>
+        <h6>รายละเอียด {{bank.description}}</h6>
         <br>
     </div>
 </div>
 <div class="flexrow">
-    <div class="col-4">
-        {% if is_success == None %}
-        <form method="post">
-            {% csrf_token %}
-            <input type="hidden" name="act" value="online amount">
-            <input class="form-control" name="price" placeholder="ยอดโอน" type="number" required>
-            <button class="btn btn-primary form-control">Add</button>
-        </form>
-        {% endif %}
-
-        {% if is_success %}
-        <br>
-        <h3 class="alert-success">
-            {{sub.product_obj.price}}
-        </h3>
-        <div class="row two-button">
-            <div class="col-6">
-                <form method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="act" value="cancel">
-                    <button class="btn btn-outline-primary form-control">Cancel</button>
-                </form>
-            </div>
-            <div class="col-6">
-                <form method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="act" value="confirm">
-                    <button class="btn btn-primary form-control">Confirm</button>
-                </form>
-            </div>
-        </div>
-        {% endif %}
-    </div>
+    <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+    <input id="x-data" type="hidden" value="{{bank.x_data}}">
+    <input id="y-data" type="hidden" value="{{bank.y_data}}">
 </div>
+
+<script>
+
+    // var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
+    // var yValues = [55, 49, 44, 24, 15];
+    // var barColors = ["red", "green", "blue", "orange", "brown"];
+    window.onload = () => {
+
+        var xValues = document.getElementById('x-data').value;
+        var yValues = document.getElementById('y-data').value;
+        yValues = yValues.split(',').map((val)=>parseFloat(val));
+        xValues = xValues.split(',').map((str)=>String(str));
+        console.log(xValues);
+
+        new Chart("myChart", {
+            type: "bar",
+            data: {
+                labels: xValues,
+                datasets: [{
+                    backgroundColor: "green",
+                    data: yValues
+                }]
+            },
+            // options: { ...}
+        });
+    }
+
+</script>
 {% endblock %}

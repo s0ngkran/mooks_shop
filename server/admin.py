@@ -35,7 +35,7 @@ class TransactionAdmin(admin.ModelAdmin):
 
 admin.site.register(Transaction, TransactionAdmin)
 class SubTransactionAdmin(admin.ModelAdmin):
-    list_display = ('product_obj','n_item')
+    list_display = ('product_obj','n_item', 'price')
     search_fields = ['product_obj__name', 'n_item']
     def get_ordering(self, request):
         return ['-updated_on']

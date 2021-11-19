@@ -60,6 +60,9 @@ class Transaction(MyModel):
     discount_from_promotion = models.FloatField(null=True, blank=True)
     discount_from_promotion_on_group = models.FloatField(null=True, blank=True)
     payment_type = models.ForeignKey(PaymentType, on_delete=models.CASCADE, null=True, blank=True)
+
+    # online
+    bank = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
     def get_sub_text(self):
         subs = self.subtransaction_set.all()
         text = ''
@@ -70,6 +73,8 @@ class Transaction(MyModel):
             text += '| %s x %d = %.2f '%(product_name, n_item, sub_total)
 
         return str(text)
+    def __str__(self):
+        return str(self.updated_on)
 
 class SubTransaction(MyModel):
     transaction_obj = models.ForeignKey(Transaction, on_delete=models.CASCADE, null=True, blank=True)
