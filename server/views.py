@@ -897,12 +897,16 @@ class OnlineAmount(MyView):
         
         banks = Product.objects.filter(is_bank=True)
         if kwargs.get('bank') == None:
-            try:
-                bank = banks.first()
-            except:pass
+                try:
+                    bank = banks.first()
+                except:pass
+
 
         
-        all_trans = Transaction.objects.filter(bank=bank)
+        if kwargs.get('bank')== 'all':
+            all_trans = Transaction.objects.all()
+        else:
+            all_trans = Transaction.objects.filter(bank=bank)
         call_back = 5
         enddate = date.today() - timedelta(days=call_back)
         x_data = []
@@ -938,6 +942,10 @@ class OnlineAmount(MyView):
         data = request.POST
         act = data.get('act')
         if act == 'search':
-            bank = Product.objects.get(is_bank=True, pk=data.get('pk'))
+            pk = data.get('pk')
+            if pk == 'all':
+                bank = 'all'
+            else:
+                bank = Product.objects.get(is_bank=True, pk=pk)
             print('bakn', bank)
             return self.get(request, **{'bank': bank})
